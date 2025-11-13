@@ -1,4 +1,3 @@
-﻿```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -101,13 +100,11 @@
         </div>
     </header>
 
-
     <div class="container">
         <div class="view-toggle">
             <button class="view-btn active" data-view="booking">Book Appointment</button>
             <button class="view-btn" data-view="admin">Chef Admin</button>
         </div>
-
 
         <!-- Booking View -->
         <div id="booking-view" class="view active">
@@ -120,11 +117,9 @@
                 <div class="business-hours">Business Hours: Mon-Fri 6:00 AM – 8:00 PM</div>
             </div>
 
-
             <div class="calendar">
                 <div class="calendar-grid" id="calendar-grid"></div>
             </div>
-
 
             <div class="confirmation" id="confirmation">
                 <div class="confirmation-icon">✓</div>
@@ -137,7 +132,6 @@
             </div>
         </div>
 
-
         <!-- Admin View -->
         <div id="admin-view" class="view">
             <div id="admin-login" class="admin-login">
@@ -149,7 +143,6 @@
                 <button class="btn btn-primary" id="login-btn" style="width: 100%;">Access Admin Panel</button>
             </div>
 
-
             <div id="admin-panel" class="admin-panel hidden">
                 <div class="admin-header">
                     <h2>Appointment Management</h2>
@@ -159,7 +152,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- Booking Modal -->
     <div class="modal" id="booking-modal">
@@ -193,7 +185,6 @@
         </div>
     </div>
 
-
     <script>
         /* ---------- Data layer ---------- */
         class BookingSystem {
@@ -219,13 +210,11 @@
                 this.init();
             }
 
-
             init() {
                 this.setupEventListeners();
                 this.renderCalendar();
                 this.checkAdminStatus();
             }
-
 
             /* ---------- Utilities ---------- */
             formatDate(date) {
@@ -243,29 +232,24 @@
                 return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
             }
 
-
             /* ---------- Calendar ---------- */
             renderCalendar() {
                 const grid = document.getElementById('calendar-grid');
                 const currentWeekElement = document.getElementById('current-week');
                 grid.innerHTML = '';
 
-
                 const startOfWeek = new Date(this.currentWeek);
                 startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1); // Monday
                 const endOfWeek = new Date(startOfWeek);
                 endOfWeek.setDate(endOfWeek.getDate() + 4);
 
-
                 currentWeekElement.textContent = `${this.formatDate(startOfWeek)} – ${this.formatDate(endOfWeek)}`;
-
 
                 // header
                 const timeHeader = document.createElement('div');
                 timeHeader.className = 'time-column';
                 timeHeader.textContent = 'Time';
                 grid.appendChild(timeHeader);
-
 
                 const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
                 days.forEach(day => {
@@ -275,17 +259,14 @@
                     grid.appendChild(dayHeader);
                 });
 
-
                 // slots
                 for (let hour = 6; hour <= 20; hour += 2) {
                     if (hour + 2 > 20) break;
-
 
                     const timeLabel = document.createElement('div');
                     timeLabel.className = 'time-column';
                     timeLabel.textContent = this.formatTime(hour);
                     grid.appendChild(timeLabel);
-
 
                     days.forEach(day => {
                         const dayDate = new Date(startOfWeek);
@@ -294,7 +275,6 @@
                         startTime.setHours(hour, 0, 0, 0);
                         const endTime = new Date(dayDate);
                         endTime.setHours(hour + 2, 0, 0, 0);
-
 
                         const slotStatus = this.getSlotStatus(startTime, endTime);
                         const timeSlot = document.createElement('div');
@@ -311,11 +291,9 @@
                 }
             }
 
-
             getSlotStatus(startTime, endTime) {
                 const dayName = startTime.toLocaleDateString('en', { weekday: 'long', timeZone: this.timeZone }).toLowerCase();
                 if (!this.businessHours[dayName] || !this.businessHours[dayName].available) return 'unavailable';
-
 
                 // capacity guard
                 const count = this.appointments.filter(a => {
@@ -324,16 +302,13 @@
                 }).length;
                 if (count >= this.maxPerDay) return 'limited';
 
-
                 for (const appt of this.appointments) {
                     if (appt.cancelled) continue;
                     const apptStart = new Date(appt.start);
                     const apptEnd = new Date(appt.end);
 
-
                     // direct overlap
                     if (startTime < apptEnd && endTime > apptStart) return 'booked';
-
 
                     // buffer
                     const bufferStart = new Date(apptStart);
@@ -345,7 +320,6 @@
                 return 'available';
             }
 
-
             getStatusText(status) {
                 switch (status) {
                     case 'available': return 'Available';
@@ -356,7 +330,6 @@
                     default: return '';
                 }
             }
-
 
             /* ---------- Booking ---------- */
             openBookingModal(startTime, endTime, day) {
@@ -377,7 +350,6 @@
                 btn.disabled = true;
                 btn.innerHTML = '<span class="spinner"></span> Booking…';
 
-
                 const formData = {
                     name: document.getElementById('client-name').value.trim(),
                     email: document.getElementById('client-email').value.trim(),
@@ -388,7 +360,6 @@
                     alert('Please fill in all required fields');
                     btn.disabled = false; btn.textContent = 'Confirm Booking'; return;
                 }
-
 
                 const appointment = {
                     id: 'appt-' + Date.now(),
@@ -401,7 +372,6 @@
                     bookedAt: new Date().toISOString(),
                     cancelled: false
                 };
-
 
                 this.appointments.push(appointment);
                 this.saveAppointments();
@@ -438,7 +408,6 @@
                 document.getElementById('confirmation').classList.remove('active');
                 this.currentAppointment = null;
             }
-
 
             /* ---------- Admin ---------- */
             handleAdminLogin() {
@@ -495,11 +464,9 @@
                 this.renderCalendar();
             }
 
-
             saveAppointments() {
                 localStorage.setItem('chefAppointments', JSON.stringify(this.appointments));
             }
-
 
             /* ---------- Event wiring ---------- */
             setupEventListeners() {
@@ -527,10 +494,8 @@
             }
         }
 
-
         /* ---------- Boot ---------- */
         const bookingSystem = new BookingSystem();
     </script>
 </body>
 </html>
-```
