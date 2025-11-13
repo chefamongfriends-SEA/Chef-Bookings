@@ -1,2 +1,2 @@
-# Chef-Bookings
-Appointment Bookings Calendar system 
+# Appointment-Bookings
+Booking Calendar system 
